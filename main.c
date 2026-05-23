@@ -1,81 +1,31 @@
 #include "stdio.h"
 
-#include "src/array.c"
+#include "src/array.h"
+#include "src/vector.h"
 
-MAKE_ARRAY(int);
-
-typedef struct {
-    int x;
-    int y;
-} Vector2;
-
-MAKE_ARRAY(Vector2);
+MAKE_VECTOR(int)
+MAKE_ARRAY(int)
 
 int main(int argc, char const *argv[]) {
-    Arrayint * a = new_array_int(10);
+    Vector_int * v = new_vector_int(10);
 
-    for (size_t i = 0; i < 10; i++)
+    for (size_t i = 0; i < 50; i++)
     {
-        array_append_int(a, i);
+        vector_push_int(v, i);
     }
 
-    for (size_t i = 0; i < 10; i++)
-    {
-        printf("%d ", array_get_int(a, i));
+    Array_int * a = new_array_int(v->capacity);
+
+    while (v->length > 0){
+        array_append_int(a, vector_pop_int(v));
     }
 
-    printf("\n");
+    Array_Iterator_int * i = array_iterator_int(a);
 
-    array_ordered_remove_int(a, 5);
+    int * value;
+    while ((value = array_iterator_next_int(i)) != NULL) {
+        printf("%u\n", *value);
+    }
     
-    for (size_t i = 0; i < a->length; i++)
-    {
-        printf("%d ", array_get_int(a, i));
-    }
-
-    printf("\n");
-
-
-    ArrayVector2 * av = new_array_Vector2(10);
-
-    for (size_t i = 0; i < 10; i++)
-    {
-        Vector2 v = {i, i};
-        array_append_Vector2(av, v);
-    }
-
-    for (size_t i = 0; i < av->length; i++)
-    {   
-        Vector2 v = array_get_Vector2(av, i);
-        printf("Vector{%d, %d}", v.x, v.y);
-    }
-
-    printf("\n");
-
-    array_ordered_remove_Vector2(av, 2);
-
-    for (size_t i = 0; i < av->length; i++)
-    {   
-        Vector2 v = array_get_Vector2(av, i);
-        printf("Vector{%d, %d}", v.x, v.y);
-    }
-
-    printf("\n");
-
-    Vector2 * v_ptr = array_get_mut_Vector2(av, 6);
-    v_ptr->x = 100;
-
-
-    Vector2 v = {-10, -999};
-    array_set_Vector2(av, 1, v);
-
-    for (size_t i = 0; i < av->length; i++)
-    {   
-        Vector2 v = array_get_Vector2(av, i);
-        printf("Vector{%d, %d}", v.x, v.y);
-    }
-
-    printf("\n");
-
     return 0;
 }
